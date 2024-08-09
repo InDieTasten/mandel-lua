@@ -31,15 +31,14 @@ function complex.pow(c, n)
     assert(math.floor(n) == n, "Expected integer for second argument, got "..n..".")
     
     if n < 0 then
-        local val = c.r^2 + c.i^2
-        c = complex.new(c.r/val ,-c.i/val)
+        c = complex.inv(c)
         n = -n
-     end
-     local r,i = c.r,c.i
-     for it = 2,n do
+    end
+    local r,i = c.r,c.i
+    for it = 2,n do
         r,i = r*c.r - i*c.i,r*c.i + i*c.r
-     end
-     return complex.new(r, i)
+    end
+    return complex.new(r, i)
 end
 
 return complex
