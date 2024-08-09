@@ -1,5 +1,5 @@
 -- Grab all tests
-local complexTests = require("complex-tests")
+local complexTests = require("lib/complex-tests")
 local allTests = complexTests
 
 -- Run tests
