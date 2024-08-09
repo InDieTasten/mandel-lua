@@ -23,6 +23,10 @@ function complex.inv (c)
     return complex.new(c.r/n, -c.i/n)
 end
 
+function complex.mag(c)
+    return math.sqrt(c.r^2 + c.i^2)
+end
+
 function complex.pow(c, n)
     assert(math.floor(n) == n, "Expected integer for second argument, got "..n..".")
     

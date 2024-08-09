@@ -33,6 +33,11 @@ local tests = {
         local c3 = complex.new(5, 8)
         local c4 = complex.pow(c3, 3)
         assert(c4.r == -835 and c4.i == 88, "Expected -835 + 88i, got "..c4.r.." + "..c4.i.."i")
+    end,
+    mag = function ()
+        local c = complex.new(3, 4)
+        local m = complex.mag(c)
+        assert(m == 5, "Expected 5, got "..m)
     end
 }
 
