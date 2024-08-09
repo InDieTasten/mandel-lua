@@ -4,8 +4,8 @@ local Bitmap = require("lua-bitmap")
 local path = "mandel.bmp"
 
 --output dimensions
-local width = 6000
-local height = 4000
+local width = 3000
+local height = 2000
 
 --complex range to sample
 local topLeft = cn.new(-2, 1)
@@ -21,7 +21,6 @@ for y = 0, height-1 do
     local imaginaryCoordinate = topLeft.i - y/height * imaginaryHeight
     for x = 0, width-1 do
         local realCoordinate = topLeft.r + x/width * realWidth
-
         local c = cn.new(realCoordinate, imaginaryCoordinate)
         local z = cn.new(0, 0)
         local i = 0
@@ -32,13 +31,10 @@ for y = 0, height-1 do
 
         local grayScaleValue = math.floor(i/100*255)
         bmp:set_pixel(x, y, grayScaleValue, grayScaleValue, grayScaleValue)
-        -- if i == 100 then
-        --     bmp:set_pixel(x, y, 255, 255, 255)
-        -- else
-        --     bmp:set_pixel(x, y, 0, 0, 0)
-        -- end
     end
-    --print progress
     print("Progress: "..(math.floor(y/height*10000)/100).."%")
 end
+print("Calculations done, writing to file...")
 io.open(path, "w"):write(bmp:tostring())
+print("Done writing "..width.."x"..height.." image to "..path)
+print("Total time: "..string.format("%.2f", os.clock()).."s")
