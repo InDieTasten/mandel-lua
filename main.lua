@@ -1,17 +1,18 @@
 local cn = require("complex")
 local Bitmap = require("lua-bitmap")
 
-local path = "mandel.bmp"
+local path = "docs/images/"
 
 --output dimensions
-local width = 3000
-local height = 2000
+local width = 9000
+local height = 6000
 
 --complex range to sample
 local topLeft = cn.new(-2, 1)
 local bottomRight = cn.new(1, -1)
 
 
+local filePath = path.."mandel-"..width.."x"..height..".bmp"
 local bmp = Bitmap.empty_bitmap(width, height, false)
 local realWidth = bottomRight.r - topLeft.r
 local imaginaryHeight = topLeft.i - bottomRight.i
@@ -35,6 +36,6 @@ for y = 0, height-1 do
     print("Progress: "..(math.floor(y/height*10000)/100).."%")
 end
 print("Calculations done, writing to file...")
-io.open(path, "w"):write(bmp:tostring())
-print("Done writing "..width.."x"..height.." image to "..path)
+io.open(filePath, "w"):write(bmp:tostring())
+print("Done writing image to "..filePath)
 print("Total time: "..string.format("%.2f", os.clock()).."s")
