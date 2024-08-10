@@ -4,8 +4,8 @@ local Bitmap = require("lib/lua-bitmap")
 local path = "docs/images/"
 
 --output dimensions
-local width = 900
-local height = 600
+local width = 9000
+local height = 6000
 
 --complex range to sample
 local topLeft = cn.new(-2, 1)
@@ -25,8 +25,8 @@ for y = 0, height-1 do
         local c = cn.new(realCoordinate, imaginaryCoordinate)
         local z = cn.new(0, 0)
         local i = 0
-        while i < 100 and cn.mag(z) < 4 do
-            z = cn.add(cn.mul(z, z), c)
+        while i < 100 and cn.mag(z) < 1000000000000 do
+            z = cn.add(cn.pow(z, 2), c)
             i = i + 1
         end
 
