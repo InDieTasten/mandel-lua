@@ -4,8 +4,8 @@ local Bitmap = require("lib/lua-bitmap")
 local path = "docs/images/"
 
 --output dimensions
-local width = 9000
-local height = 6000
+local width = 900
+local height = 600
 
 --complex range to sample
 local topLeft = cn.new(-2, 1)
