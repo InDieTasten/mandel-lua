@@ -4,7 +4,11 @@ Mandelbrot renderer in pure Lua
 ## Usage
 
 ```bash
+# renders a 900x600 image by default
 luajit main.lua
+
+# renders a 3000x2000 image
+luajit main.lua 3000 2000
 ```
 
 ## Sample output file
