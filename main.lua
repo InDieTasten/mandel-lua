@@ -28,37 +28,37 @@ local maxIterations = tonumber(cli.getArgument(command, "i", "iterations") or 25
 local realCenter = tonumber(cli.getArgument(command, "R", "real") or -0.5)
 local imaginaryCenter = tonumber(cli.getArgument(command, "I", "imag") or 0)
 local zoom = tonumber(cli.getArgument(command, "z", "zoom") or 1)
-
 local filePath = cli.getArgument(command, "o", "output") or path.."mandel-"..width.."x"..height..".bmp"
 local blackInside = cli.getSwitch(command, "b", "black") and true
 local verbose = cli.getSwitch(command, "v", "verbose")
 local progressReporting = cli.getSwitch(command, "p", "progress")
 
+
 local keepInsideWhite = 1
 if blackInside then
     keepInsideWhite = 0
 end
-
 if verbose then
     print("Generating Mandelbrot set with parameters:")
     print("Width: "..width)
     print("Height: "..height)
     print("Center Point: "..realCenter.." + "..imaginaryCenter.."i")
-    print("Zoom: "..zoom)
+    print("Zoom: e^"..zoom.." = "..math.exp(zoom))
     print("Max iterations: "..maxIterations)
     print("Black inside: "..tostring(blackInside))
 end
 --complex range to sample
 local center = cn.new(realCenter, imaginaryCenter)
 local aspectRatio = width / height
-local topLeft = cn.new(center.r - (aspectRatio / zoom), center.i + (1 / zoom))
-local bottomRight = cn.new(center.r + (aspectRatio / zoom), center.i - (1 / zoom))
+zoomE = math.exp(zoom)
+local topLeft = cn.new(center.r - (aspectRatio / zoomE), center.i + (1 / zoomE))
+local bottomRight = cn.new(center.r + (aspectRatio / zoomE), center.i - (1 / zoomE))
 
 function easingFunction(x)
     if x >= 1 then
         return 1 * keepInsideWhite
     else
-        return 1 - 2 ^ (-(maxIterations / 40) * x)
+        return 1 - math.exp(-(maxIterations / 60 / math.max(zoom, 1)) * x)
     end
 end
 
