@@ -78,9 +78,16 @@ Options:
   -f, --gif                 Use ffmpeg to create a gif
 ```
 
-#### Example
+#### Example (white)
 ```bash
-luajit sequence.lua -bn 1000 -v -R -1.7635735993133 -I 0 -Z 4 -N 1000 -s 80 --gif
+luajit sequence.lua -n 1000 -v -R -1.7635735993133 -I 0 -Z 4 -N 2000 -s 80 --gif
 ```
 #### Output
-![output.gif](./docs/images/output.gif)
+![sequenceWhite.gif](./docs/images/sequenceWhite.gif)
+
+#### Example (black)
+```bash
+luajit sequence.lua -n 1000 -v -R -1.7635735993133 -I 0 -Z 4 -N 2000 -s 80 --gif -b
+```
+#### Output
+![sequenceBlack.gif](./docs/images/sequenceWhite.gif)

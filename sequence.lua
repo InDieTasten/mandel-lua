@@ -54,6 +54,11 @@ function easeOut(x)
     return 1-2^(-10*x)
 end
 
+local blackOption = ""
+if blackInside then
+    blackOption = "-b "
+end
+
 for i = 1, sequence do
     local t = (i-1) / sequence
     local real = realCenter + (realCenter2 - realCenter) * easeOut(t)
@@ -61,7 +66,7 @@ for i = 1, sequence do
     local z = zoom + (zoom2 - zoom) * t
     local n = maxIterations + (maxIterations2 - maxIterations) * t
 
-    local command = lua_path.." main.lua -w "..width.." -h "..height.." -r "..real.." -i "..imag.." -z "..z.." -n "..n.." -o frames/frame-"..string.format("%04d", i)..".bmp"
+    local command = lua_command.." main.lua "..blackOption.."-w "..width.." -h "..height.." -r "..real.." -i "..imag.." -z "..z.." -n "..n.." -o frames/frame-"..string.format("%04d", i)..".bmp"
     print(command)
     io.popen(command):read("*a")
 end
