@@ -1,4 +1,4 @@
-require("complex")
+require("lib/complex")
 
 local tests = {
     add = function ()
