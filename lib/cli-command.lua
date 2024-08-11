@@ -28,7 +28,7 @@ local function getSwitch(commandString, switch, switchLong)
     if s then
         return s, e
     end
-    s, e = string.find(commandString, "%-%-"..switchLong.."[%s=]")
+    s, e = string.find(commandString, "%-%-"..switchLong.."%s")
     if s then
         return s, e
     end
@@ -51,11 +51,12 @@ local function getArgument(commandString, argument, argumentLong)
         return nil
     end
 
-    local _, _, normalValue = string.find(commandString, "^%s+([^%-\"']%S*)", argEnd)
+    local _, _, normalValue = string.find(commandString,       "^%s+([^%-\"']%S*)", argEnd)
     local _, _, quotedValue = string.find(commandString,       "^%s+\"([^\"]*)\"", argEnd)
     local _, _, singleQuotedValue = string.find(commandString, "^%s+\'([^\']*)\'", argEnd)
+    local _, _, negativeNumber = string.find(commandString,    "^%s+(%-[%d%.]+)", argEnd)
 
-    return normalValue or quotedValue or singleQuotedValue or true
+    return normalValue or quotedValue or singleQuotedValue or negativeNumber or true
 end
 
 return {
