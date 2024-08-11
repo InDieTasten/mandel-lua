@@ -18,10 +18,11 @@ local tests = {
         assert(cli.getSwitch(commandString, "t", "typooo"), "Expected typooo to be set. typooo was not set")
     end,
     getArgument = function()
-        local commandString = "-a value -bc --long longvalue --typooo=typovalue -q \"some quoted' value\" -s 'another quoted\" value'"
+        local commandString = "-a value -bc -d 1 --long longvalue --typooo=typovalue -q \"some quoted' value\" -s 'another quoted\" value'"
         assert(cli.getArgument(commandString, "a", "aaa") == "value", "Expected 'value', got "..tostring(cli.getArgument(commandString, "a", "aaa")))
         assert(cli.getArgument(commandString, "b", "bbb") == true, "Expected true, got "..tostring(cli.getArgument(commandString, "b", "bbb")))
         assert(cli.getArgument(commandString, "c", "ccc") == true, "Expected true, got "..tostring(cli.getArgument(commandString, "c", "ccc")))
+        assert(cli.getArgument(commandString, "d", "ddd") == "1", "Expected '1', got "..tostring(cli.getArgument(commandString, "d", "ddd")))
         assert(cli.getArgument(commandString, "l", "long") == "longvalue", "Expected 'longvalue', got "..tostring(cli.getArgument(commandString, "l", "long")))
         assert(cli.getArgument(commandString, "t", "typo") == nil, "Expected nil, got "..tostring(cli.getArgument(commandString, "t", "typo")))
         assert(cli.getArgument(commandString, "q", "quoted") == "some quoted' value", "Expected 'some quoted' value', got "..tostring(cli.getArgument(commandString, "q", "quoted")))

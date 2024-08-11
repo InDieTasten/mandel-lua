@@ -51,7 +51,7 @@ local function getArgument(commandString, argument, argumentLong)
         return nil
     end
 
-    local _, _, normalValue = string.find(commandString, "^%s+([^%-\"']%S+)", argEnd)
+    local _, _, normalValue = string.find(commandString, "^%s+([^%-\"']%S*)", argEnd)
     local _, _, quotedValue = string.find(commandString,       "^%s+\"([^\"]*)\"", argEnd)
     local _, _, singleQuotedValue = string.find(commandString, "^%s+\'([^\']*)\'", argEnd)
 
