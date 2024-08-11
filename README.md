@@ -6,10 +6,13 @@ Mandelbrot renderer in pure Lua
 ```
 Usage: lua main.lua [options]
 Options:
-  -w, --width <width>       Width of the image           [Default: 900]
-  -h, --height <height>     Height of the image          [Default: 600]
-  -i, --iterations <iter>   Maximum number of iterations [Default: 255]
-  -o, --output <file>       Output file path             [Default: docs/images/mandel-<width>x<height>.bmp]
+  -w, --width <width>       Width of the image                 [Default: 900]
+  -h, --height <height>     Height of the image                [Default: 600]
+  -R, --real <real>         Real part of the center point      [Default: -0.5]
+  -I, --imag <imag>         Imaginary part of the center point [Default: 0]
+  -z, --zoom <zoom>         Zoom level                         [Default: 1]
+  -i, --iterations <iter>   Maximum number of iterations       [Default: 255]
+  -o, --output <file>       Output file path                   [Default: ./mandel-<width>x<height>.bmp]
   -b, --black               Black inside the set
   -v, --verbose             Verbose output
   -p, --progress            Show progress
