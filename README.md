@@ -3,15 +3,18 @@ Mandelbrot renderer in pure Lua
 
 ## Usage
 
+### Single images
 ```
 Usage: lua main.lua [options]
 Options:
   -w, --width <width>       Width of the image                 [Default: 900]
   -h, --height <height>     Height of the image                [Default: 600]
-  -R, --real <real>         Real part of the center point      [Default: -0.5]
-  -I, --imag <imag>         Imaginary part of the center point [Default: 0]
+
+  -r, --real <real>         Real part of the center point      [Default: -0.5]
+  -i, --imag <imag>         Imaginary part of the center point [Default: 0]
   -z, --zoom <zoom>         Zoom level                         [Default: 0]
-  -i, --iterations <iter>   Maximum number of iterations       [Default: 255]
+  -n, --iterations <iter>   Maximum number of iterations       [Default: 255]
+
   -o, --output <file>       Output file path                   [Default: ./mandel-<width>x<height>.bmp]
   -x, --interactive         Interactive mode
   -b, --black               Black inside the set
@@ -20,7 +23,7 @@ Options:
   -?, --help                Show this help
 ```
 
-## Examples
+#### Examples
 ```bash
 # renders a 900x600 image by default
 lua main.lua
@@ -38,7 +41,7 @@ lua main.lua -i 512
 lua main.lua -b
 ```
 
-## Sample output file
+#### Sample output file
 
 ![mandel-900x600.bmp](./docs/images/mandel-900x600.bmp)
 
@@ -50,3 +53,34 @@ See higher res images here
 | [mandel-3000x2000.bmp](https://github.com/InDieTasten/mandel-lua/raw/main/docs/images/mandel-3000x2000.bmp) | 3000x2000 | 2.83s | 17.2 MB |
 | [mandel-9000x6000.bmp](https://github.com/InDieTasten/mandel-lua/raw/main/docs/images/mandel-9000x6000.bmp) | 9000x6000 | 47.99s | 154 MB |
 
+### Sequences
+
+Requires [ffmpeg](https://ffmpeg.org/) to be installed and in the PATH in order to create gifs.
+
+```
+Usage: luajit sequence.lua [options]
+Options:
+  -w, --width <width>       Width of the image                 [Default: 900]
+  -h, --height <height>     Height of the image                [Default: 600]
+
+  -r, --real <real>         Real part of the center point      [Default: -0.5]
+  -i, --imag <imag>         Imaginary part of the center point [Default: 0]
+  -z, --zoom <zoom>         Zoom level                         [Default: 0]
+  -n, --iterations <iter>   Maximum number of iterations       [Default: 255]
+
+  -R, --real2 <real>        Target -r for sequence             [Default: -0.5]
+  -I, --imag2 <imag>        Target -i for sequence             [Default: 0]
+  -Z, --zoom2 <zoom>        Target -z for sequence             [Default: 0]
+  -N, --iterations2 <iter>  Target -n for sequence             [Default: 255]
+  -s, --sequence <frames>   Number of frames in the sequence   [Default: 10]
+  -b, --black               Black inside the set
+
+  -f, --gif                 Use ffmpeg to create a gif
+```
+
+#### Example
+```bash
+luajit sequence.lua -bn 1000 -v -R -1.7635735993133 -I 0 -Z 4 -N 1000 -s 80 --gif
+```
+#### Output
+![output.gif](./docs/images/output.gif)

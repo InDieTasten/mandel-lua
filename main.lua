@@ -11,10 +11,12 @@ if (cli.getSwitch(command, "?", "help")) then
     print("Options:")
     print("  -w, --width <width>       Width of the image                 [Default: 900]")
     print("  -h, --height <height>     Height of the image                [Default: 600]")
-    print("  -R, --real <real>         Real part of the center point      [Default: -0.5]")
-    print("  -I, --imag <imag>         Imaginary part of the center point [Default: 0]")
+    print("")
+    print("  -r, --real <real>         Real part of the center point      [Default: -0.5]")
+    print("  -i, --imag <imag>         Imaginary part of the center point [Default: 0]")
     print("  -z, --zoom <zoom>         Zoom level                         [Default: 0]")
-    print("  -i, --iterations <iter>   Maximum number of iterations       [Default: 255]")
+    print("  -n, --iterations <iter>   Maximum number of iterations       [Default: 255]")
+    print("")
     print("  -o, --output <file>       Output file path                   [Default: "..path.."mandel-<width>x<height>.bmp]")
     print("  -x, --interactive         Interactive mode")
     print("  -b, --black               Black inside the set")
@@ -25,10 +27,12 @@ if (cli.getSwitch(command, "?", "help")) then
 end
 local width = tonumber(cli.getArgument(command, "w", "width") or 900)
 local height = tonumber(cli.getArgument(command, "h", "height") or 600)
-local maxIterations = tonumber(cli.getArgument(command, "i", "iterations") or 255)
-local realCenter = tonumber(cli.getArgument(command, "R", "real") or -0.5)
-local imaginaryCenter = tonumber(cli.getArgument(command, "I", "imag") or 0)
+
+local realCenter = tonumber(cli.getArgument(command, "r", "real") or -0.5)
+local imaginaryCenter = tonumber(cli.getArgument(command, "i", "imag") or 0)
 local zoom = tonumber(cli.getArgument(command, "z", "zoom") or 0)
+local maxIterations = tonumber(cli.getArgument(command, "n", "iterations") or 255)
+
 local filePath = cli.getArgument(command, "o", "output") or path.."mandel-"..width.."x"..height..".bmp"
 local interactive = cli.getSwitch(command, "x", "interactive") and true
 local blackInside = cli.getSwitch(command, "b", "black") and true
@@ -59,7 +63,7 @@ while running do
         print("Zoom: e^"..zoom.." = "..math.exp(zoom))
         print("Max iterations: "..maxIterations)
         print("Black inside: "..tostring(blackInside))
-        print("Location command: -R "..realCenter.." -I "..imaginaryCenter.." -z "..zoom)
+        print("Location command: -r "..realCenter.." -i "..imaginaryCenter.." -z "..zoom.." -n "..maxIterations)
     end
     if blackInside then
         keepInsideWhite = 0
