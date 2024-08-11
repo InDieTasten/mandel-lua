@@ -90,4 +90,4 @@ luajit sequence.lua -n 1000 -v -R -1.7635735993133 -I 0 -Z 4 -N 2000 -s 80 --gif
 luajit sequence.lua -n 1000 -v -R -1.7635735993133 -I 0 -Z 4 -N 2000 -s 80 --gif -b
 ```
 #### Output
-![sequenceBlack.gif](./docs/images/sequenceWhite.gif)
+![sequenceBlack.gif](./docs/images/sequenceBlack.gif)
