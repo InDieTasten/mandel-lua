@@ -75,7 +75,7 @@ Options:
   -s, --sequence <frames>   Number of frames in the sequence   [Default: 10]
   -b, --black               Black inside the set
 
-  -f, --gif                 Use ffmpeg to create a gif
+  -g, --gif                 Use ffmpeg to create a gif
 ```
 
 #### Example (white)
