@@ -27,9 +27,9 @@ if cli.getSwitch(command, "?", "help") then
     print("  --color1 <hex>            Initial first gradient color       [Default: 000000]")
     print("  --color2 <hex>            Initial second gradient color      [Default: 808080]")
     print("  --color3 <hex>            Initial third gradient color       [Default: FFFFFF]")
-    print("  --target-color1 <hex>     Target first gradient color        [Default: same as --color1]")
-    print("  --target-color2 <hex>     Target second gradient color       [Default: same as --color2]")
-    print("  --target-color3 <hex>     Target third gradient color        [Default: same as --color3]")
+    print("  --targetcolor1 <hex>      Target first gradient color        [Default: same as --color1]")
+    print("  --targetcolor2 <hex>      Target second gradient color       [Default: same as --color2]")
+    print("  --targetcolor3 <hex>      Target third gradient color        [Default: same as --color3]")
     print("")
     print("  -f, --gif                 Use ffmpeg to create a gif")
     return
@@ -53,9 +53,9 @@ local genGif = cli.getSwitch(command, "g", "gif") and true
 local color1Hex = cli.getArgument(command, "1", "color1") or "000000"
 local color2Hex = cli.getArgument(command, "2", "color2") or "808080"
 local color3Hex = cli.getArgument(command, "3", "color3") or "FFFFFF"
-local targetColor1Hex = cli.getArgument(command, "4", "target-color1") or color1Hex
-local targetColor2Hex = cli.getArgument(command, "5", "target-color2") or color2Hex
-local targetColor3Hex = cli.getArgument(command, "6", "target-color3") or color3Hex
+local targetColor1Hex = cli.getArgument(command, "4", "targetcolor1") or color1Hex
+local targetColor2Hex = cli.getArgument(command, "5", "targetcolor2") or color2Hex
+local targetColor3Hex = cli.getArgument(command, "6", "targetcolor3") or color3Hex
 
 local initialGradient = {
     color.parseHex(color1Hex),
