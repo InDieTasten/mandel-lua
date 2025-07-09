@@ -92,7 +92,7 @@ while running do
 
             local ni = i/maxIterations
 
-            local grayScaleValue = easingFunction(ni) * 255
+            local grayScaleValue = math.floor(easingFunction(ni) * 255)
             bmp:set_pixel(x, y, grayScaleValue, grayScaleValue, grayScaleValue)
         end
         if progressReporting then
