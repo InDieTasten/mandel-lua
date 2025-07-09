@@ -1,4 +1,5 @@
 local cli = require("lib/cli-command")
+local color = require("lib/color")
 
 local lua_command = io.popen("echo -n ${LUA_COMMAND:-lua}"):read("*a")
 print("LUA_COMMAND: "..lua_command)
@@ -23,6 +24,13 @@ if cli.getSwitch(command, "?", "help") then
     print("  -s, --sequence <frames>   Number of frames in the sequence   [Default: 10]")
     print("  -b, --black               Black inside the set")
     print("")
+    print("  --color1 <hex>            Initial first gradient color       [Default: 000000]")
+    print("  --color2 <hex>            Initial second gradient color      [Default: 808080]")
+    print("  --color3 <hex>            Initial third gradient color       [Default: FFFFFF]")
+    print("  --target-color1 <hex>     Target first gradient color        [Default: same as --color1]")
+    print("  --target-color2 <hex>     Target second gradient color       [Default: same as --color2]")
+    print("  --target-color3 <hex>     Target third gradient color        [Default: same as --color3]")
+    print("")
     print("  -f, --gif                 Use ffmpeg to create a gif")
     return
 end
@@ -40,6 +48,26 @@ local maxIterations2 = tonumber(cli.getArgument(command, "N", "iterations2") or 
 local sequence = tonumber(cli.getArgument(command, "s", "sequence") or 10)
 local blackInside = cli.getSwitch(command, "b", "black") and true
 local genGif = cli.getSwitch(command, "g", "gif") and true
+
+-- Parse color arguments
+local color1Hex = cli.getArgument(command, "1", "color1") or "000000"
+local color2Hex = cli.getArgument(command, "2", "color2") or "808080"
+local color3Hex = cli.getArgument(command, "3", "color3") or "FFFFFF"
+local targetColor1Hex = cli.getArgument(command, "4", "target-color1") or color1Hex
+local targetColor2Hex = cli.getArgument(command, "5", "target-color2") or color2Hex
+local targetColor3Hex = cli.getArgument(command, "6", "target-color3") or color3Hex
+
+local initialGradient = {
+    color.parseHex(color1Hex),
+    color.parseHex(color2Hex),
+    color.parseHex(color3Hex)
+}
+
+local targetGradient = {
+    color.parseHex(targetColor1Hex),
+    color.parseHex(targetColor2Hex),
+    color.parseHex(targetColor3Hex)
+}
 
 os.execute("mkdir -p frames")
 os.execute("rm -f frames/*")
@@ -60,13 +88,20 @@ if blackInside then
 end
 
 for i = 1, sequence do
-    local t = (i-1) / sequence
+    local t = (i-1) / (sequence-1) -- Fix: use sequence-1 to ensure last frame gets t=1
     local real = realCenter + (realCenter2 - realCenter) * easeOut(t)
     local imag = imaginaryCenter + (imaginaryCenter2 - imaginaryCenter) * easeOut(t)
     local z = zoom + (zoom2 - zoom) * t
     local n = maxIterations + (maxIterations2 - maxIterations) * t
 
-    local command = lua_command.." main.lua "..blackOption.."-w "..width.." -h "..height.." -r "..real.." -i "..imag.." -z "..z.." -n "..n.." -o frames/frame-"..string.format("%04d", i)..".bmp"
+    -- Interpolate gradient colors for this frame
+    local frameGradient = color.interpolateGradients(initialGradient, targetGradient, t)
+    local colorOptions = string.format("--color1 %02X%02X%02X --color2 %02X%02X%02X --color3 %02X%02X%02X",
+        frameGradient[1].r, frameGradient[1].g, frameGradient[1].b,
+        frameGradient[2].r, frameGradient[2].g, frameGradient[2].b,
+        frameGradient[3].r, frameGradient[3].g, frameGradient[3].b)
+
+    local command = lua_command.." main.lua "..blackOption.."-w "..width.." -h "..height.." -r "..real.." -i "..imag.." -z "..z.." -n "..n.." "..colorOptions.." -o frames/frame-"..string.format("%04d", i)..".bmp"
     print(command)
     io.popen(command):read("*a")
 end

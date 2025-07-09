@@ -1,6 +1,7 @@
 local cn = require("lib/complex")
 local Bitmap = require("lib/lua-bitmap")
 local cli = require("lib/cli-command")
+local color = require("lib/color")
 
 local path = "./"
 
@@ -17,6 +18,10 @@ if (cli.getSwitch(command, "?", "help")) then
     print("  -z, --zoom <zoom>         Zoom level                         [Default: 0]")
     print("  -n, --iterations <iter>   Maximum number of iterations       [Default: 255]")
     print("")
+    print("  --color1 <hex>            First gradient color (RGB hex)     [Default: 000000]")
+    print("  --color2 <hex>            Second gradient color (RGB hex)    [Default: 808080]") 
+    print("  --color3 <hex>            Third gradient color (RGB hex)     [Default: FFFFFF]")
+    print("")
     print("  -o, --output <file>       Output file path                   [Default: "..path.."mandel-<width>x<height>.bmp]")
     print("  -x, --interactive         Interactive mode")
     print("  -b, --black               Black inside the set")
@@ -32,6 +37,16 @@ local realCenter = tonumber(cli.getArgument(command, "r", "real") or -0.5)
 local imaginaryCenter = tonumber(cli.getArgument(command, "i", "imag") or 0)
 local zoom = tonumber(cli.getArgument(command, "z", "zoom") or 0)
 local maxIterations = tonumber(cli.getArgument(command, "n", "iterations") or 255)
+
+local color1Hex = cli.getArgument(command, "1", "color1") or "000000"
+local color2Hex = cli.getArgument(command, "2", "color2") or "808080"
+local color3Hex = cli.getArgument(command, "3", "color3") or "FFFFFF"
+
+local gradientColors = {
+    color.parseHex(color1Hex),
+    color.parseHex(color2Hex),
+    color.parseHex(color3Hex)
+}
 
 local filePath = cli.getArgument(command, "o", "output") or path.."mandel-"..width.."x"..height..".bmp"
 local interactive = cli.getSwitch(command, "x", "interactive") and true
@@ -91,9 +106,10 @@ while running do
             end
 
             local ni = i/maxIterations
+            local t = easingFunction(ni)
 
-            local grayScaleValue = math.floor(easingFunction(ni) * 255)
-            bmp:set_pixel(x, y, grayScaleValue, grayScaleValue, grayScaleValue)
+            local pixelColor = color.getGradientColor(gradientColors, t)
+            bmp:set_pixel(x, y, pixelColor.r, pixelColor.g, pixelColor.b)
         end
         if progressReporting then
             print("Progress: "..(math.floor(y/height*10000)/100).."%\r")

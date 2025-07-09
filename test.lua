@@ -1,6 +1,7 @@
 -- Grab all tests
 local complexTests = require("lib/complex-tests")
 local cliTests = require("lib/cli-command-tests")
+local colorTests = require("lib/color-tests")
 local allTests = {}
 
 for name, testFunc in pairs(complexTests) do
@@ -8,6 +9,9 @@ for name, testFunc in pairs(complexTests) do
 end
 for name, testFunc in pairs(cliTests) do
     allTests["cli."..name] = testFunc
+end
+for name, testFunc in pairs(colorTests) do
+    allTests["color."..name] = testFunc
 end
 
 -- Run tests
