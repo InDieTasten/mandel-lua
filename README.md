@@ -15,6 +15,10 @@ Options:
   -z, --zoom <zoom>         Zoom level                         [Default: 0]
   -n, --iterations <iter>   Maximum number of iterations       [Default: 255]
 
+  --color1 <hex>            First gradient color (RGB hex)     [Default: 000000]
+  --color2 <hex>            Second gradient color (RGB hex)    [Default: 808080]
+  --color3 <hex>            Third gradient color (RGB hex)     [Default: FFFFFF]
+
   -o, --output <file>       Output file path                   [Default: ./mandel-<width>x<height>.bmp]
   -x, --interactive         Interactive mode
   -b, --black               Black inside the set
@@ -39,6 +43,8 @@ lua main.lua -i 512
 
 # renders a 900x600 image with black inside the set
 lua main.lua -b
+# renders with a fire gradient (red → yellow → blue)
+lua main.lua --color1 FF0000 --color2 FFFF00 --color3 0000FF
 ```
 
 #### Sample output file
@@ -58,7 +64,7 @@ See higher res images here
 Requires [ffmpeg](https://ffmpeg.org/) to be installed and in the PATH in order to create gifs.
 
 ```
-Usage: luajit sequence.lua [options]
+Usage: lua sequence.lua [options]
 Options:
   -w, --width <width>       Width of the image                 [Default: 900]
   -h, --height <height>     Height of the image                [Default: 600]
@@ -74,6 +80,13 @@ Options:
   -N, --iterations2 <iter>  Target -n for sequence             [Default: 255]
   -s, --sequence <frames>   Number of frames in the sequence   [Default: 10]
   -b, --black               Black inside the set
+
+  --color1 <hex>            Initial first gradient color       [Default: 000000]
+  --color2 <hex>            Initial second gradient color      [Default: 808080]
+  --color3 <hex>            Initial third gradient color       [Default: FFFFFF]
+  --targetcolor1 <hex>      Target first gradient color        [Default: same as --color1]
+  --targetcolor2 <hex>      Target second gradient color       [Default: same as --color2]
+  --targetcolor3 <hex>      Target third gradient color        [Default: same as --color3]
 
   -g, --gif                 Use ffmpeg to create a gif
 ```
@@ -91,3 +104,22 @@ luajit sequence.lua -n 1000 -v -R -1.7635735993133 -I 0 -Z 4 -N 2000 -s 80 --gif
 ```
 #### Output
 ![sequenceBlack.gif](./docs/images/sequenceBlack.gif)
+
+#### Example (color sequence)
+```bash
+luajit sequence.lua --color1 FF0000 --targetcolor1 00FFFF \
+                   --color2 0000FF --targetcolor2 FF00FF \
+                   --color3 FFFFFF --targetcolor3 FFFF00 \
+                   -s 80 --gif
+```
+#### Output
+![sequenceColor.gif](./docs/images/sequenceColor.gif)
+
+### Color Gradients & Interpolation
+
+- **3-Point Color Gradients**: Use `--color1`, `--color2`, `--color3` to set custom RGB colors for the Mandelbrot gradient.
+- **Sequence Color Interpolation**: Use `--targetcolor1`, `--targetcolor2`, `--targetcolor3` to define the target gradient for smooth transitions in sequences.
+- **Flexible Input**: Accepts hex colors with or without `#` prefix.
+- **Defaults**: Black → Gray → White (`000000` → `808080` → `FFFFFF`) if not specified.
+- **Error Handling**: Invalid hex values will show a clear error message.
+- **Backwards Compatible**: Defaults to grayscale if no color options are provided.
