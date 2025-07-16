@@ -5,7 +5,7 @@ local color = require("lib/color")
 
 local path = "./"
 
-local command = cli.buildCommandString({...})
+local command = cli.buildCommandString({ ... })
 
 if (cli.getSwitch(command, "?", "help")) then
     print("Usage: lua main.lua [options]")
@@ -19,10 +19,11 @@ if (cli.getSwitch(command, "?", "help")) then
     print("  -n, --iterations <iter>   Maximum number of iterations       [Default: 255]")
     print("")
     print("  --color1 <hex>            First gradient color (RGB hex)     [Default: 000000]")
-    print("  --color2 <hex>            Second gradient color (RGB hex)    [Default: 808080]") 
+    print("  --color2 <hex>            Second gradient color (RGB hex)    [Default: 808080]")
     print("  --color3 <hex>            Third gradient color (RGB hex)     [Default: FFFFFF]")
     print("")
-    print("  -o, --output <file>       Output file path                   [Default: "..path.."mandel-<width>x<height>.bmp]")
+    print("  -o, --output <file>       Output file path                   [Default: " ..
+    path .. "mandel-<width>x<height>.bmp]")
     print("  -x, --interactive         Interactive mode")
     print("  -b, --black               Black inside the set")
     print("  -v, --verbose             Verbose output")
@@ -48,7 +49,7 @@ local gradientColors = {
     color.parseHex(color3Hex)
 }
 
-local filePath = cli.getArgument(command, "o", "output") or path.."mandel-"..width.."x"..height..".bmp"
+local filePath = cli.getArgument(command, "o", "output") or path .. "mandel-" .. width .. "x" .. height .. ".bmp"
 local interactive = cli.getSwitch(command, "x", "interactive") and true
 local blackInside = cli.getSwitch(command, "b", "black") and true
 local verbose = cli.getSwitch(command, "v", "verbose")
@@ -66,19 +67,19 @@ function easingFunction(x)
     end
 end
 
-
 local bmp = Bitmap.empty_bitmap(width, height, false)
 local running = true
 while running do
     if verbose then
         print("Generating Mandelbrot set with parameters:")
-        print("Width: "..width)
-        print("Height: "..height)
-        print("Center Point: "..realCenter.." + "..imaginaryCenter.."i")
-        print("Zoom: e^"..zoom.." = "..math.exp(zoom))
-        print("Max iterations: "..maxIterations)
-        print("Black inside: "..tostring(blackInside))
-        print("Location command: -r "..realCenter.." -i "..imaginaryCenter.." -z "..zoom.." -n "..maxIterations)
+        print("Width: " .. width)
+        print("Height: " .. height)
+        print("Center Point: " .. realCenter .. " + " .. imaginaryCenter .. "i")
+        print("Zoom: e^" .. zoom .. " = " .. math.exp(zoom))
+        print("Max iterations: " .. maxIterations)
+        print("Black inside: " .. tostring(blackInside))
+        print("Location command: -r " .. realCenter .. " -i " .. imaginaryCenter .. " -z " .. zoom ..
+        " -n " .. maxIterations)
     end
     if blackInside then
         keepInsideWhite = 0
@@ -93,10 +94,10 @@ while running do
     local realWidth = bottomRight.r - topLeft.r
     local imaginaryHeight = topLeft.i - bottomRight.i
 
-    for y = 0, height-1 do
-        local imaginaryCoordinate = topLeft.i - y/height * imaginaryHeight
-        for x = 0, width-1 do
-            local realCoordinate = topLeft.r + x/width * realWidth
+    for y = 0, height - 1 do
+        local imaginaryCoordinate = topLeft.i - y / height * imaginaryHeight
+        for x = 0, width - 1 do
+            local realCoordinate = topLeft.r + x / width * realWidth
             local c = cn.new(realCoordinate, imaginaryCoordinate)
             local z = cn.new(0, 0)
             local i = 0
@@ -105,23 +106,23 @@ while running do
                 i = i + 1
             end
 
-            local ni = i/maxIterations
+            local ni = i / maxIterations
             local t = easingFunction(ni)
 
             local pixelColor = color.getGradientColor(gradientColors, t)
             bmp:set_pixel(x, y, pixelColor.r, pixelColor.g, pixelColor.b)
         end
         if progressReporting then
-            print("Progress: "..(math.floor(y/height*10000)/100).."%\r")
+            print("Progress: " .. (math.floor(y / height * 10000) / 100) .. "%\r")
         end
     end
 
     if verbose then
         print("Calculations done, writing to file...")
-        print("Total time: "..string.format("%.2f", os.clock()).."s")
+        print("Total time: " .. string.format("%.2f", os.clock()) .. "s")
     end
     io.open(filePath, "w"):write(bmp:tostring())
-    print("Done writing image to "..filePath)
+    print("Done writing image to " .. filePath)
 
     while interactive do
         print("Enter 'wasd+-erv' to generate another image or enter 'q' to quit")
@@ -134,13 +135,13 @@ while running do
         elseif input == "-" then
             zoom = zoom - 0.1
         elseif input == "w" then
-            imaginaryCenter = imaginaryCenter + imaginaryHeight/10
+            imaginaryCenter = imaginaryCenter + imaginaryHeight / 10
         elseif input == "s" then
-            imaginaryCenter = imaginaryCenter - imaginaryHeight/10
+            imaginaryCenter = imaginaryCenter - imaginaryHeight / 10
         elseif input == "a" then
-            realCenter = realCenter - realWidth/10
+            realCenter = realCenter - realWidth / 10
         elseif input == "d" then
-            realCenter = realCenter + realWidth/10
+            realCenter = realCenter + realWidth / 10
         elseif input == "b" then
             blackInside = not blackInside
         elseif input == "e" then
