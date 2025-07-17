@@ -78,7 +78,7 @@ print("Zoom: " .. zoom .. " > " .. zoom2)
 print("Iterations: " .. maxIterations .. " > " .. maxIterations2)
 
 --exponential ease out function
-function easeOut(x)
+local function easeOut(x)
     return 1 - 2 ^ (-10 * x)
 end
 
@@ -102,21 +102,27 @@ for i = 1, sequence do
         frameGradient[3].r, frameGradient[3].g, frameGradient[3].b)
 
     local command = lua_command ..
-    " main.lua " ..
-    blackOption ..
-    "-w " ..
-    width ..
-    " -h " ..
-    height ..
-    " -r " ..
-    real .. " -i " ..
-    imag .. " -z " .. z .. " -n " .. n .. " " .. colorOptions .. " -o frames/frame-" .. string.format("%04d", i) ..
-    ".bmp"
+        " main.lua " ..
+        blackOption ..
+        "-w " ..
+        width ..
+        " -h " ..
+        height ..
+        " -r " ..
+        real .. " -i " ..
+        imag .. " -z " .. z .. " -n " .. n .. " " .. colorOptions .. " -o frames/frame-" .. string.format("%04d", i) ..
+        ".bmp"
     print(command)
-    io.popen(command):read("*a")
+    local popenHandle = io.popen(command)
+    if popenHandle then
+        local output = popenHandle:read("*a")
+        popenHandle:close()
+    else
+        print("Error: Could not execute command: " .. tostring(command))
+    end
 end
 
 if genGif then
     os.execute("ffmpeg -y -framerate 30 -i frames/frame-%04d.bmp -vf \"fps=30,scale=" ..
-    width .. ":-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 output.gif")
+        width .. ":-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 output.gif")
 end
