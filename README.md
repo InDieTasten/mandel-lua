@@ -63,6 +63,8 @@ See higher res images here
 
 Requires [ffmpeg](https://ffmpeg.org/) to be installed and in the PATH in order to create gifs.
 
+For instructions on using [LuaJIT](https://luajit.org/) as the runtime for child processes launched from `sequence.lua`, see [docs/luajit.md](docs/luajit.md). This will speed up the generation of sequences significantly.
+
 ```
 Usage: lua sequence.lua [options]
 Options:
