@@ -19,10 +19,6 @@ This ensures that all child processes spawned by `sequence.lua` will use `luajit
 ## Why LuaJIT?
 LuaJIT is a Just-In-Time Compiler for Lua, offering significant performance improvements over the standard Lua interpreter. For installation instructions, visit the [official LuaJIT website](https://luajit.org/).
 
-## Troubleshooting
-- **LuaJIT not found:** Make sure `luajit` is installed and available in your system's PATH. See the [LuaJIT website](https://luajit.org/) for installation help.
-- **Path issues:** If you have multiple Lua versions, ensure you are using the correct binary (`luajit`).
-- **Script compatibility:** Most Lua scripts work with LuaJIT, but if you encounter errors, check the [LuaJIT documentation](https://luajit.org/luajit.html).
 
 ## More Information
 - [LuaJIT Project](https://luajit.org/)
