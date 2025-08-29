@@ -17,6 +17,7 @@ if (cli.getSwitch(command, "?", "help")) then
     print("  -i, --imag <imag>         Imaginary part of the center point [Default: 0]")
     print("  -z, --zoom <zoom>         Zoom level                         [Default: 0]")
     print("  -n, --iterations <iter>   Maximum number of iterations       [Default: 255]")
+    print("  -a, --antialiasing <num>  Anti-aliasing samples per pixel    [Default: 4]")
     print("")
     print("  --color1 <hex>            First gradient color (RGB hex)     [Default: 000000]")
     print("  --color2 <hex>            Second gradient color (RGB hex)    [Default: 808080]")
@@ -38,6 +39,7 @@ local realCenter = tonumber(cli.getArgument(command, "r", "real") or -0.5)
 local imaginaryCenter = tonumber(cli.getArgument(command, "i", "imag") or 0)
 local zoom = tonumber(cli.getArgument(command, "z", "zoom") or 0)
 local maxIterations = tonumber(cli.getArgument(command, "n", "iterations") or 255)
+local antialiasing = tonumber(cli.getArgument(command, "a", "antialiasing") or 4)
 
 local color1Hex = cli.getArgument(command, "1", "color1") or "000000"
 local color2Hex = cli.getArgument(command, "2", "color2") or "808080"
@@ -77,6 +79,7 @@ while running do
         print("Center Point: " .. realCenter .. " + " .. imaginaryCenter .. "i")
         print("Zoom: e^" .. zoom .. " = " .. math.exp(zoom))
         print("Max iterations: " .. maxIterations)
+        print("Anti-aliasing samples: " .. antialiasing)
         print("Black inside: " .. tostring(blackInside))
         print("Location command: -r " .. realCenter .. " -i " .. imaginaryCenter .. " -z " .. zoom ..
         " -n " .. maxIterations)
@@ -97,20 +100,60 @@ while running do
     for y = 0, height - 1 do
         local imaginaryCoordinate = topLeft.i - y / height * imaginaryHeight
         for x = 0, width - 1 do
-            local realCoordinate = topLeft.r + x / width * realWidth
-            local c = cn.new(realCoordinate, imaginaryCoordinate)
-            local z = cn.new(0, 0)
-            local i = 0
-            while i < maxIterations and cn.mag(z) < 1000000000000 do
-                z = cn.add(cn.pow(z, 2), c)
-                i = i + 1
+            if antialiasing <= 1 then
+                -- Single sample per pixel (original behavior)
+                local realCoordinate = topLeft.r + x / width * realWidth
+                local c = cn.new(realCoordinate, imaginaryCoordinate)
+                local z = cn.new(0, 0)
+                local i = 0
+                while i < maxIterations and cn.mag(z) < 1000000000000 do
+                    z = cn.add(cn.pow(z, 2), c)
+                    i = i + 1
+                end
+
+                local ni = i / maxIterations
+                local t = easingFunction(ni)
+
+                local pixelColor = color.getGradientColor(gradientColors, t)
+                bmp:set_pixel(x, y, pixelColor.r, pixelColor.g, pixelColor.b)
+            else
+                -- Multiple samples per pixel for anti-aliasing
+                local samplesPerSide = math.ceil(math.sqrt(antialiasing))
+                local totalSamples = samplesPerSide * samplesPerSide
+                local totalR, totalG, totalB = 0, 0, 0
+                
+                for sy = 0, samplesPerSide - 1 do
+                    for sx = 0, samplesPerSide - 1 do
+                        -- Calculate subpixel coordinates
+                        local subX = x + (sx + 0.5) / samplesPerSide
+                        local subY = y + (sy + 0.5) / samplesPerSide
+                        local realCoordinate = topLeft.r + subX / width * realWidth
+                        local subImagCoordinate = topLeft.i - subY / height * imaginaryHeight
+                        
+                        local c = cn.new(realCoordinate, subImagCoordinate)
+                        local z = cn.new(0, 0)
+                        local i = 0
+                        while i < maxIterations and cn.mag(z) < 1000000000000 do
+                            z = cn.add(cn.pow(z, 2), c)
+                            i = i + 1
+                        end
+
+                        local ni = i / maxIterations
+                        local t = easingFunction(ni)
+                        local sampleColor = color.getGradientColor(gradientColors, t)
+                        
+                        totalR = totalR + sampleColor.r
+                        totalG = totalG + sampleColor.g
+                        totalB = totalB + sampleColor.b
+                    end
+                end
+                
+                -- Average the samples
+                local avgR = math.floor(totalR / totalSamples + 0.5)
+                local avgG = math.floor(totalG / totalSamples + 0.5)
+                local avgB = math.floor(totalB / totalSamples + 0.5)
+                bmp:set_pixel(x, y, avgR, avgG, avgB)
             end
-
-            local ni = i / maxIterations
-            local t = easingFunction(ni)
-
-            local pixelColor = color.getGradientColor(gradientColors, t)
-            bmp:set_pixel(x, y, pixelColor.r, pixelColor.g, pixelColor.b)
         end
         if progressReporting then
             print("Progress: " .. (math.floor(y / height * 10000) / 100) .. "%\r")
