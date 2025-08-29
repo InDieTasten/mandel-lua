@@ -125,3 +125,19 @@ luajit sequence.lua --color1 FF0000 --targetcolor1 00FFFF \
 - **Defaults**: Black → Gray → White (`000000` → `808080` → `FFFFFF`) if not specified.
 - **Error Handling**: Invalid hex values will show a clear error message.
 - **Backwards Compatible**: Defaults to grayscale if no color options are provided.
+
+## Development
+
+### Running Tests
+
+The project uses the [busted](https://olivinelabs.com/busted/) testing framework. To run all tests:
+
+```bash
+# Install busted (requires luarocks)
+sudo luarocks install busted
+
+# Run all tests
+busted
+```
+
+Tests are located in the `spec/` directory and follow the `*_spec.lua` naming convention.
